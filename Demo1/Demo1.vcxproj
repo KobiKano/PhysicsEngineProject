@@ -176,6 +176,11 @@
     <ClInclude Include="src\headers\VBO.h" />
     <ClInclude Include="src\headers\Window.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PhysicsEngine\PhysicsEngine.vcxproj">
+      <Project>{1eac24ea-12fa-4923-a4af-7d89b59f33c9}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
