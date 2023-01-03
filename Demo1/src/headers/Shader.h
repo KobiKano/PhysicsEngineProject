@@ -1,6 +1,6 @@
-#ifndef ShaderH
-#define ShaderH
+#pragma once
 
+#include "headers/Logger.h"
 #include <glad/glad.h>
 #include <iostream>
 
@@ -18,9 +18,3 @@ class Shader {
 		void create();
 		void terminate();
 };
-
-
-
-
-
-#endif

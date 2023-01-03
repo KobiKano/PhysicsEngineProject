@@ -1,8 +1,11 @@
-#ifndef PhysicsBallH
-#define PhysicsBallH
+#pragma once
 
+#include "headers/Logger.h"
 #include <glad/glad.h>
-#include<vector>
+#include <vector>
+#include <GLFW/glfw3.h>
+#include <iostream>
+#include <string>
 
 /*
 Header file for PhysicsBall object
@@ -17,11 +20,9 @@ public:
 	//defualt constructor
 	PhysicsBall();
 
-	PhysicsBall(int);
+	PhysicsBall(GLfloat xPos,GLfloat yPos, GLFWwindow* window);
 
 	//functions for class
-	std::vector<GLfloat> generate(int);
+	std::vector<GLfloat> generate(GLfloat xPos, GLfloat yPos, GLFWwindow* window);
 	void move();
 };
-
-#endif

@@ -2,6 +2,9 @@
 
 using namespace std;
 
+//initialize logger
+static Logger logger(Logger::info);
+
 /*
 This fucntion defines functionality for window resizing
 */
@@ -20,9 +23,9 @@ Window::Window(int width, int height) {
 	window = glfwCreateWindow(width, height, "PhysicsEngine", NULL, NULL);
 	if (window == NULL) {
 		glfwTerminate();
-		cout << "Error creating window.... Terminating program";
+		logger.errorLog("Error creating window.... Terminating program\n");
 	}
-	cout << "Window creation successful\n";
+	logger.debugLog("Window creation successful\n");
 	//make window appear
 	glfwMakeContextCurrent(window);
 
@@ -36,6 +39,6 @@ Window::Window(int width, int height) {
 
 //this function terminates all window processes
 void Window::terminate() {
-	cout << "destroying window\n";
+	logger.debugLog("destroying window\n");
 	glfwDestroyWindow(window);
 }

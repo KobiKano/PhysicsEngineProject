@@ -1,6 +1,6 @@
-#ifndef VAOH
-#define VAOH
+#pragma once
 
+#include "headers/Logger.h"
 #include<glad/glad.h>
 #include "VBO.h"
 
@@ -26,5 +26,3 @@ public:
 	void unbind();
 	void terminate();
 };
-
-#endif

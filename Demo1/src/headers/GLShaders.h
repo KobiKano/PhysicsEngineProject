@@ -1,5 +1,7 @@
 #pragma once
 
+//This header is used to store various shader configurations for use in rendering
+//avoids unessicary file searches and clutter
 static const char* vert1 = "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
 "void main()\n"

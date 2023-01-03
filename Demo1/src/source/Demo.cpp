@@ -3,7 +3,9 @@
 using namespace std;
 
 int main() {
-	cout << "Demo started\n";
+	//initialize logger
+	static Logger logger(Logger::info);
+	logger.infoLog("Demo started\n");
 	//initialize graphics
 	glfwInit();
 
@@ -17,6 +19,6 @@ int main() {
 
 	//end process with default return
 	glfwTerminate();
-	cout << "Demo exited\n";
+	logger.infoLog("Demo exited\n");
 	return 0;
 }

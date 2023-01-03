@@ -1,5 +1,8 @@
 #include "../headers/Shader.h"
 
+//initialize logger
+static Logger logger(Logger::info);
+
 //default constructor
 Shader::Shader() {}
 
@@ -27,14 +30,14 @@ Shader::Shader(const char* vertexShaderSource, const char* fragmentShaderSource)
 	glGetShaderiv(vertexShaderID, GL_COMPILE_STATUS, &success);
 	if (!success) {
 		glGetShaderInfoLog(vertexShaderID, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" <<
-			infoLog << std::endl;
+		logger.errorLog("ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" +
+			(std::string)infoLog + "\n");
 	}
 	glGetShaderiv(fragmentShaderID, GL_COMPILE_STATUS, &success);
 	if (!success) {
 		glGetShaderInfoLog(fragmentShaderID, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" <<
-			infoLog << std::endl;
+		logger.errorLog("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" +
+			(std::string)infoLog + "\n");
 	}
 
 	//set ID in memory for shader program
@@ -49,8 +52,8 @@ Shader::Shader(const char* vertexShaderSource, const char* fragmentShaderSource)
 	glGetProgramiv(ID, GL_LINK_STATUS, &success);
 	if (!success) {
 		glGetProgramInfoLog(vertexShaderID, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::PROGRAM::LINK_FAILED\n" <<
-			infoLog << std::endl;
+		logger.errorLog("ERROR::SHADER::PROGRAM::LINK_FAILED\n" +
+			(std::string)infoLog + "\n");
 	}
 
 	//delete shaders since they are now stored in the shader program

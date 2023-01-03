@@ -1,6 +1,6 @@
-#ifndef VBOH
-#define VBOH
+#pragma once
 
+#include "headers/Logger.h"
 #include <glad/glad.h>
 
 /*
@@ -23,7 +23,5 @@ public:
 	void unassign();
 	void terminate();
 };
-
-#endif
 
 

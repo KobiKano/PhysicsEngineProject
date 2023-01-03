@@ -1,21 +1,24 @@
-#ifndef RenderH
-#define RenderH
+#pragma once
 
 #include<glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <string>
 #include "GLShaders.h"
 #include "Shader.h"
+#include "headers/Logger.h"
 #include "PhysicsBall.h"
 #include "VBO.h"
 #include "VAO.h"
+
+//fields for rendering process
+static PhysicsBall object;
+static VBO vertexBuffer;
+static VAO vertexArray;
 
 //This class starts the rendering process for the demo
 class Render {
 	//fields used to initialize graphics
 	Shader shaderProgram;
-	PhysicsBall object;
-	VBO vertexBuffer;
-	VAO vertexArray;
 public:
 	//default constructor
 	Render();
@@ -26,6 +29,4 @@ public:
 	//functions for render object
 	void terminate();
 };
-
-#endif
 

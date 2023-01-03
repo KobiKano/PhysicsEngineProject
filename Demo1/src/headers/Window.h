@@ -1,6 +1,6 @@
-#ifndef WindowH
-#define WindowH
+#pragma once
 
+#include "headers/Logger.h"
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -20,7 +20,3 @@ public:
 	//funtions for window
 	void terminate();
 };
-
-
-
-#endif

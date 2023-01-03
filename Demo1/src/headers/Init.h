@@ -1,6 +1,6 @@
-#ifndef InitH
-#define InitH
+#pragma once
 
+#include "headers/Logger.h"
 #include <iostream>
 #include "Window.h"
 #include "Render.h"
@@ -19,5 +19,3 @@ public:
 	void renderLoop();
 	void terminate();
 };
-
-#endif InitH

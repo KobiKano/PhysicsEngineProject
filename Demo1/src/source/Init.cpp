@@ -1,9 +1,13 @@
 #include "../headers/Init.h"
 
+
+//intitialze logger
+static Logger logger(Logger::info);
+
 //this is the constructor for the initialization class
 //this class handles all the processes of the demo so that there is minimal clutter in the main class
 Init::Init() {
-	std::cout << "initialization started\n";
+	logger.debugLog("initialization started\n");
 	createWindow();
 	renderLoop();
 	terminate();
