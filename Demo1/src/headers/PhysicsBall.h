@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 #include <vector>
 #include <GLFW/glfw3.h>
+#include <glad/glad.h>
 #include <iostream>
 #include <string>
 
@@ -16,13 +17,16 @@ class PhysicsBall {
 public:
 	//field to store vertex information
 	std::vector<GLfloat> vertices;
+	std::vector<GLuint> indices;
 
 	//defualt constructor
 	PhysicsBall();
 
-	PhysicsBall(GLfloat xPos,GLfloat yPos, GLFWwindow* window);
+	PhysicsBall(GLfloat radius, GLfloat xPos,GLfloat yPos, GLFWwindow* window);
 
 	//functions for class
-	std::vector<GLfloat> generate(GLfloat xPos, GLfloat yPos, GLFWwindow* window);
+	void generate(GLfloat radius, GLfloat xPos, GLfloat yPos, GLFWwindow* window);
+
+	void draw();
 	void move();
 };

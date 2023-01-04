@@ -8,11 +8,13 @@
 #include "headers/Logger.h"
 #include "PhysicsBall.h"
 #include "VBO.h"
+#include "EBO.h"
 #include "VAO.h"
 
 //fields for rendering process
 static PhysicsBall object;
 static VBO vertexBuffer;
+static EBO elementBuffer;
 static VAO vertexArray;
 
 //This class starts the rendering process for the demo

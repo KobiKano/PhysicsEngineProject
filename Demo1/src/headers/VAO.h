@@ -3,6 +3,7 @@
 #include "headers/Logger.h"
 #include<glad/glad.h>
 #include "VBO.h"
+#include "EBO.h"
 
 /*
 This class is a vertex array object
@@ -21,7 +22,7 @@ public:
 	VAO(int generic);
 
 	//functionality related to VAO
-	void linkVBO(VBO VBO, GLuint layout);
+	void link(VBO VBO, EBO EBO, GLuint layout);
 	void bind();
 	void unbind();
 	void terminate();

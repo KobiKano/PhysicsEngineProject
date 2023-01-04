@@ -4,24 +4,22 @@
 #include <glad/glad.h>
 
 /*
-This is the vertex buffer object class
+This is the element buffer object class
 This is part of the object rendering pipeline
 */
-class VBO {
+class EBO {
 public:
 	//ID to reference object
 	GLuint ID;
 
 	//default constructor
-	VBO();
+	EBO();
 
-	//constructor that takes vertex data
-	VBO(GLfloat* vertices);
+	//constructor that takes indices data
+	EBO(GLuint* indices);
 
 	//functions related to rendering object
 	void assign();
 	void unassign();
 	void terminate();
 };
-
-

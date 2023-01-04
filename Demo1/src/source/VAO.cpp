@@ -9,16 +9,14 @@ VAO::VAO(int generic) {
 }
 
 //this function links a VBO to a VAO
-void VAO::linkVBO(VBO VBO, GLuint layout) {
-	//start VBO
+void VAO::link(VBO VBO, EBO EBO, GLuint layout) {
+	//start VBO and EBO
 	VBO.assign();
+	EBO.assign();
 
 	//assign attributes to vertices
 	glVertexAttribPointer(layout, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(layout);
-
-	//end VBO
-	VBO.unassign();
 }
 
 //This function binds the VAO to the ID

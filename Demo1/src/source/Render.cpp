@@ -10,11 +10,25 @@ static Logger logger(Logger::info);
 */
 void createSphereObject(GLdouble xPos, GLdouble yPos, GLFWwindow* window) {
 	//create object
-	object = PhysicsBall((GLfloat)xPos, (GLfloat)yPos, window);
+	object = PhysicsBall(0.1f/*radius*/, (GLfloat)xPos, (GLfloat)yPos, window);
+	//logger to check if correct indices and vertices print
+	logger.debugLog("vertices: ");
+	for (int i = 0; i < object.vertices.size(); i++) {
+		logger.debugLog(std::to_string(object.vertices[i]) + " ");
+	}
+	logger.debugLog("\n");
+	logger.debugLog("indices: ");
+	for (int i = 0; i < object.indices.size(); i++) {
+		logger.debugLog(std::to_string(object.indices[i]) + " ");
+	}
+	logger.debugLog("\n");
+
+	//write object to openGL
 	vertexArray = VAO(0);
 	vertexArray.bind();
-	vertexBuffer = VBO(&object.vertices[0], sizeof(object.vertices));
-	vertexArray.linkVBO(vertexBuffer, 0);
+	vertexBuffer = VBO(&object.vertices[0]);
+	elementBuffer = EBO(&object.indices[0]);
+	vertexArray.link(vertexBuffer, elementBuffer, 0);
 }
 
 /*
@@ -26,7 +40,7 @@ void processInput(GLFWwindow* window) {
 		glfwSetWindowShouldClose(window, true);
 	//check if left click performed
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-		logger.debugLog("Left Mouse Button Pressed\n");
+		//create object at mouse click location
 		GLdouble xPos, yPos;
 		glfwGetCursorPos(window, &xPos, &yPos);
 		logger.debugLog("Mouse coords: xPos->" + std::to_string(xPos) + " yPos->" + std::to_string(yPos) + "\n");
@@ -58,12 +72,15 @@ Render::Render(GLFWwindow* window) {
 		//set colors
 		glClearColor(0.0144f, 0.360f, 0.354f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+
 		//define the shader
 		shaderProgram.create();
+
 		//checks latest key press
 		processInput(window);
+
 		//draw object
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		object.draw();
 
 		//checks for user interactions and updates current window buffer
 		glfwSwapBuffers(window);
@@ -77,5 +94,6 @@ void Render::terminate() {
 	logger.debugLog("terminating render process\n");
 	shaderProgram.terminate();
 	vertexBuffer.terminate();
+	elementBuffer.terminate();
 	vertexArray.terminate();
 }
