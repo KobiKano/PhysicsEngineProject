@@ -52,37 +52,37 @@ void generateOctahedron(GLfloat radius, GLfloat xPos, GLfloat yPos, std::vector<
 
 	//assign octahedron indices
 	//surface 1
-	indices[0] = (1);
-	indices[1] = (2);
-	indices[2] = (3);
+	indices[0] = (0);
+	indices[1] = (1);
+	indices[2] = (2);
 	//surface 2
-	indices[3] = (2);
-	indices[4] = (4);
-	indices[5] = (3);
+	indices[3] = (1);
+	indices[4] = (3);
+	indices[5] = (2);
 	//surface 3
-	indices[6] = (4);
-	indices[7] = (5);
-	indices[8] = (3);
+	indices[6] = (3);
+	indices[7] = (4);
+	indices[8] = (2);
 	//surface 4
-	indices[9] = (5);
-	indices[10] = (1);
-	indices[11] = (3);
+	indices[9] = (4);
+	indices[10] = (0);
+	indices[11] = (2);
 	//surface 5
-	indices[12] = (1);
-	indices[13] = (2);
-	indices[14] = (6);
+	indices[12] = (0);
+	indices[13] = (1);
+	indices[14] = (5);
 	//surface 6
-	indices[15] = (2);
-	indices[16] = (4);
-	indices[17] = (6);
+	indices[15] = (1);
+	indices[16] = (3);
+	indices[17] = (5);
 	//surface 7
-	indices[18] = (4);
-	indices[19] = (5);
-	indices[20] = (6);
+	indices[18] = (3);
+	indices[19] = (4);
+	indices[20] = (5);
 	//surface 8
-	indices[21] = (5);
-	indices[22] = (1);
-	indices[23] = (6);
+	indices[21] = (4);
+	indices[22] = (0);
+	indices[23] = (5);
 }
 
 /*

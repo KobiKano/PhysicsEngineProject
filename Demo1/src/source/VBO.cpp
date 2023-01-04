@@ -1,13 +1,17 @@
 #include "../headers/VBO.h"
 
+//initialize logger
+static Logger logger(Logger::debug);
+
 //default constructor
 VBO::VBO() {};
 
 //generates and assigns buffer for vertex data
-VBO::VBO(GLfloat* vertices) {
+VBO::VBO(GLfloat* vertices, int size) {
 	glGenBuffers(1, &ID);
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
-	glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(vertices), vertices, GL_STATIC_DRAW);
+	logger.debugLog("size of vertices: " + std::to_string(size) + "\n");
+	glBufferData(GL_ARRAY_BUFFER, size * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
 }
 
 //links buffer to ID

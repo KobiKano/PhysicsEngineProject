@@ -2,6 +2,7 @@
 
 #include "headers/Logger.h"
 #include <glad/glad.h>
+#include <string>
 
 /*
 This is the vertex buffer object class
@@ -16,7 +17,7 @@ public:
 	VBO();
 
 	//constructor that takes vertex data
-	VBO(GLfloat* vertices);
+	VBO(GLfloat* vertices, int size);
 
 	//functions related to rendering object
 	void assign();

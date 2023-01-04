@@ -1,13 +1,17 @@
 #include "../headers/EBO.h"
 
+//initialize logger
+static Logger logger(Logger::debug);
+
 //default constructor
 EBO::EBO() {};
 
 //generates and assigns buffer for vertex data
-EBO::EBO(GLuint* indices) {
+EBO::EBO(GLuint* indices, int size) {
 	glGenBuffers(1, &ID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 9 * sizeof(indices), indices, GL_STATIC_DRAW);
+	logger.debugLog("size of indices: " + std::to_string(size) + "\n");
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, size * sizeof(GLuint), indices, GL_STATIC_DRAW);
 }
 
 //links buffer to ID

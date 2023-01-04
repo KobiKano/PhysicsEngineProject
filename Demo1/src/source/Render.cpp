@@ -26,8 +26,8 @@ void createSphereObject(GLdouble xPos, GLdouble yPos, GLFWwindow* window) {
 	//write object to openGL
 	vertexArray = VAO(0);
 	vertexArray.bind();
-	vertexBuffer = VBO(&object.vertices[0]);
-	elementBuffer = EBO(&object.indices[0]);
+	vertexBuffer = VBO(&object.vertices[0], object.vertices.size());
+	elementBuffer = EBO(&object.indices[0], object.indices.size());
 	vertexArray.link(vertexBuffer, elementBuffer, 0);
 }
 

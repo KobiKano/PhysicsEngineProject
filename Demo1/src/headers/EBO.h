@@ -2,6 +2,7 @@
 
 #include "headers/Logger.h"
 #include <glad/glad.h>
+#include <string>
 
 /*
 This is the element buffer object class
@@ -16,7 +17,7 @@ public:
 	EBO();
 
 	//constructor that takes indices data
-	EBO(GLuint* indices);
+	EBO(GLuint* indices, int size);
 
 	//functions related to rendering object
 	void assign();
