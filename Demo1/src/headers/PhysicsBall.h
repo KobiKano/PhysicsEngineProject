@@ -7,6 +7,7 @@
 #include <glad/glad.h>
 #include <iostream>
 #include <string>
+#include<math.h>
 
 /*
 Header file for PhysicsBall object

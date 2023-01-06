@@ -10,17 +10,13 @@ static Logger logger(Logger::info);
 */
 void createSphereObject(GLdouble xPos, GLdouble yPos, GLFWwindow* window) {
 	//create object
-	object = PhysicsBall(0.1f/*radius*/, (GLfloat)xPos, (GLfloat)yPos, window);
+	GLfloat radius = 0.1f;
+	object = PhysicsBall(radius, (GLfloat)xPos, (GLfloat)yPos, window);
 	//logger to check if correct indices and vertices print
-	logger.debugLog("vertices: ");
-	for (int i = 0; i < object.vertices.size(); i++) {
-		logger.debugLog(std::to_string(object.vertices[i]) + " ");
-	}
-	logger.debugLog("\n");
-	logger.debugLog("indices: ");
-	for (int i = 0; i < object.indices.size(); i++) {
-		logger.debugLog(std::to_string(object.indices[i]) + " ");
-	}
+	logger.debugLog("size of vertices: " + to_string(object.vertices.size()) + "\n");
+	
+	logger.debugLog("size of indices: " + to_string(object.indices.size()) + "\n");
+	
 	logger.debugLog("\n");
 
 	//write object to openGL
@@ -79,6 +75,7 @@ Render::Render(GLFWwindow* window) {
 		//checks latest key press
 		processInput(window);
 
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		//draw object
 		object.draw();
 

@@ -10,7 +10,6 @@ EBO::EBO() {};
 EBO::EBO(GLuint* indices, int size) {
 	glGenBuffers(1, &ID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
-	logger.debugLog("size of indices: " + std::to_string(size) + "\n");
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, size * sizeof(GLuint), indices, GL_STATIC_DRAW);
 }
 
