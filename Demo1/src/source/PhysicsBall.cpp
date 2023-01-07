@@ -212,7 +212,7 @@ void subdivideSurfaces(GLfloat radius, std::vector<GLfloat> &vertices, std::vect
 	GLfloat newV1[3], newV2[3], newV3[3]; // new vertex positions
 	unsigned int iIndex;
 	unsigned int vIndex;
-	int subdivisions = 2;  //using only 3 subdivisions as this is as far as necissary to get a spherical resemblance
+	int subdivisions = 3;  //using only 3 subdivisions as this is as far as necissary to get a spherical resemblance
 
 	//iterate all subdivision levels
 	for (int i = 1; i <= subdivisions; ++i)
@@ -316,20 +316,53 @@ void translateToMousePos(GLfloat& xPos, GLfloat& yPos, std::vector<GLfloat>& ver
 //default constuctor
 PhysicsBall::PhysicsBall() {}
 
-//TODO actual implementation
+//default destructor
+PhysicsBall::~PhysicsBall() {
+	logger.debugLog("PhysicsBall destroyed\n");
+	vertexBuffer.terminate();
+	elementBuffer.terminate();
+	vertexArray.terminate();
+}
+
+//this is the constructor for the class
 PhysicsBall::PhysicsBall(GLfloat radius, GLfloat xPos, GLfloat yPos, GLFWwindow* window) {
 	generate(radius, xPos, yPos, window);
 }
 
 void PhysicsBall::generate(GLfloat radius, GLfloat xPos, GLfloat yPos, GLFWwindow* window) {
+	//create the IcoSphere
 	generateIcosahedron(radius, vertices, indices);
 	offset(xPos, yPos, window);
 	subdivideSurfaces(radius, vertices, indices);
 	normalizeVertices(radius, vertices);
+	//move created object to be centered around mouse click position
 	translateToMousePos(xPos, yPos, vertices);
+	//bind data to openGL
+	vertexArray = VAO(1);
+	vertexArray.bind();
+	vertexBuffer = VBO(&vertices[0], vertices.size());
+	elementBuffer = EBO(&indices[0], indices.size());
+	vertexArray.link(vertexBuffer, elementBuffer, 0);
+	onScreen = true;
 }
 
+//this function handles the actual rendering of the object to the screen
 void PhysicsBall::draw() {
+	//check if vertices off screen
+	int count = 0;
+	for (int i = 0; i < vertices.size(); i++) {
+		if ((vertices[i] > 1.0f) || (vertices[i] < -1.0f)) {
+			count++;
+		}
+		//check if over half of the vertices are out of the screen
+		if (count >= (vertices.size() / 2)) {
+			onScreen = false;
+			return;
+		}
+	}
+
+	//write object to openGL
+	vertexArray.bind();
 	glDrawElements(GL_TRIANGLES, (unsigned int)indices.size(), GL_UNSIGNED_INT, 0);
 }
 

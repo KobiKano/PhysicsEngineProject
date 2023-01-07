@@ -3,18 +3,15 @@
 #include<glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <string>
+#include <vector>
 #include "GLShaders.h"
 #include "Shader.h"
 #include "headers/Logger.h"
 #include "PhysicsBall.h"
-#include "VBO.h"
-#include "EBO.h"
 #include "VAO.h"
 
 //fields for rendering process
-static PhysicsBall object;
-static VBO vertexBuffer;
-static EBO elementBuffer;
+static std::vector<PhysicsBall*> objects;
 static VAO vertexArray;
 
 //This class starts the rendering process for the demo

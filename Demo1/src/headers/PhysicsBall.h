@@ -4,10 +4,12 @@
 #include <glad/glad.h>
 #include <vector>
 #include <GLFW/glfw3.h>
-#include <glad/glad.h>
 #include <iostream>
 #include <string>
 #include<math.h>
+#include "VBO.h"
+#include "EBO.h"
+#include "VAO.h"
 
 /*
 Header file for PhysicsBall object
@@ -20,10 +22,18 @@ public:
 	std::vector<GLfloat> vertices;
 	std::vector<GLuint> indices;
 
+	bool onScreen;
+	VBO vertexBuffer;
+	EBO elementBuffer;
+	VAO vertexArray;
+
 	//defualt constructor
 	PhysicsBall();
 
 	PhysicsBall(GLfloat radius, GLfloat xPos,GLfloat yPos, GLFWwindow* window);
+
+	//default destructor
+	~PhysicsBall();
 
 	//functions for class
 	void generate(GLfloat radius, GLfloat xPos, GLfloat yPos, GLFWwindow* window);

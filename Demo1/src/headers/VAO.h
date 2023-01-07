@@ -19,7 +19,7 @@ public:
 	VAO();
 
 	//generic constructor for the VAO
-	VAO(int generic);
+	VAO(int size);
 
 	//functionality related to VAO
 	void link(VBO VBO, EBO EBO, GLuint layout);

@@ -11,20 +11,15 @@ static Logger logger(Logger::info);
 void createSphereObject(GLdouble xPos, GLdouble yPos, GLFWwindow* window) {
 	//create object
 	GLfloat radius = 0.1f;
-	object = PhysicsBall(radius, (GLfloat)xPos, (GLfloat)yPos, window);
+	PhysicsBall* object = new PhysicsBall(radius, (GLfloat)xPos, (GLfloat)yPos, window);
+	
 	//logger to check if correct indices and vertices print
-	logger.debugLog("size of vertices: " + to_string(object.vertices.size()) + "\n");
-	
-	logger.debugLog("size of indices: " + to_string(object.indices.size()) + "\n");
-	
-	logger.debugLog("\n");
+	logger.debugLog("size of vertices: " + to_string(object->vertices.size()) + "\n");
+	logger.debugLog("size of indices: " + to_string(object->indices.size()) + "\n");
 
-	//write object to openGL
-	vertexArray = VAO(0);
-	vertexArray.bind();
-	vertexBuffer = VBO(&object.vertices[0], object.vertices.size());
-	elementBuffer = EBO(&object.indices[0], object.indices.size());
-	vertexArray.link(vertexBuffer, elementBuffer, 0);
+	//but object in vector
+	objects.push_back(object);
+	logger.debugLog("Num PhysicsBalls: " + std::to_string(objects.size()) + "\n\n");
 }
 
 /*
@@ -53,6 +48,11 @@ Render::Render() {};
 Render::Render(GLFWwindow* window) {
 	logger.debugLog("starting rendering process\n");
 
+	//initialize object storage
+	objects.clear();
+	objects.reserve(20);  //max number of objects on screen
+	logger.debugLog("num objects: " + std::to_string(objects.size()) + "\n");
+
 	//initialize shaders
 	shaderProgram = Shader(vert1, frag1);
 
@@ -76,8 +76,21 @@ Render::Render(GLFWwindow* window) {
 		processInput(window);
 
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		//draw object
-		object.draw();
+		//draw objects
+		for (int i = 0; i < objects.size(); i++) {
+			//check if max size reached
+			if (objects.size() == 20) {
+				//delete first object
+				delete objects.front();
+				objects.erase(objects.begin());
+			}
+			//check if off screen
+			if (!objects[i]->onScreen) {
+				objects.erase(objects.begin() + i);
+			}
+			//draw objects
+			objects[i]->draw();
+		}
 
 		//checks for user interactions and updates current window buffer
 		glfwSwapBuffers(window);
@@ -90,7 +103,5 @@ Render::Render(GLFWwindow* window) {
 void Render::terminate() {
 	logger.debugLog("terminating render process\n");
 	shaderProgram.terminate();
-	vertexBuffer.terminate();
-	elementBuffer.terminate();
 	vertexArray.terminate();
 }

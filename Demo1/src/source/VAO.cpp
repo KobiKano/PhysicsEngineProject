@@ -1,11 +1,11 @@
 #include "../headers/VAO.h"
 
 //default constructor
-VAO::VAO() {};
+VAO::VAO() {}
 
 //Constructor for VAO, assigns value to ID
-VAO::VAO(int generic) {
-	glGenVertexArrays(1, &ID);
+VAO::VAO(int size) {
+	glGenVertexArrays(size, &ID);
 }
 
 //this function links a VBO to a VAO
