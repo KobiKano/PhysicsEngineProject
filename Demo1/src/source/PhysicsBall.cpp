@@ -4,19 +4,6 @@
 static Logger logger(Logger::info);
 
 /*
-This function calculates the position of the mouse in terms of vertex float (-1 to 1)
-	given position in pixels
-*/
-void offset(GLfloat& xPos, GLfloat& yPos, GLFWwindow* window) {
-	int width, height;
-	glfwGetWindowSize(window, &width, &height);
-	logger.debugLog("Window Dimensions: Width->" + std::to_string(width) + " Height->" + std::to_string(height) + "\n");
-	xPos = (xPos - (width / 2)) / (width / 2);
-	yPos = (yPos - (height / 2)) / (height / 2);
-	logger.debugLog("Relative Position: xPos->" + std::to_string(xPos) + " yPos->" + std::to_string(yPos) + "\n");
-}
-
-/*
 This function generates an Icosahedron based on where the user clicked and a given radius
 The vertices of the octahedron are then stored in the vertices and indices fields
 */
@@ -303,13 +290,12 @@ void normalizeVertices(GLfloat radius, std::vector<GLfloat> &vertices) {
 
 /*
 This function takes the vertices from a isohedron and the position of the mouse at the time of creation
-translates every vertex to be centered about that mouse position
+translates every vertex to be centered about a point (0,1,0)
 */
-void translateToMousePos(GLfloat& xPos, GLfloat& yPos, std::vector<GLfloat>& vertices) {
+void translateToSpawn(std::vector<GLfloat>& vertices) {
 	for (int i = 0; i < vertices.size(); i += 3) {
-		vertices[i] += xPos;
 		//yPos is subtracted because of how glfw works
-		vertices[i + 1] -= yPos;
+		vertices[i + 1] += 1.0f;
 	}
 }
 
@@ -325,18 +311,17 @@ PhysicsBall::~PhysicsBall() {
 }
 
 //this is the constructor for the class
-PhysicsBall::PhysicsBall(GLfloat radius, GLfloat xPos, GLfloat yPos, GLFWwindow* window) {
-	generate(radius, xPos, yPos, window);
+PhysicsBall::PhysicsBall(GLfloat radius, GLFWwindow* window) {
+	generate(radius, window);
 }
 
-void PhysicsBall::generate(GLfloat radius, GLfloat xPos, GLfloat yPos, GLFWwindow* window) {
+void PhysicsBall::generate(GLfloat radius, GLFWwindow* window) {
 	//create the IcoSphere
 	generateIcosahedron(radius, vertices, indices);
-	offset(xPos, yPos, window);
 	subdivideSurfaces(radius, vertices, indices);
 	normalizeVertices(radius, vertices);
 	//move created object to be centered around mouse click position
-	translateToMousePos(xPos, yPos, vertices);
+	translateToSpawn(vertices);
 	//bind data to openGL
 	vertexArray = VAO(1);
 	vertexArray.bind();
@@ -344,6 +329,7 @@ void PhysicsBall::generate(GLfloat radius, GLfloat xPos, GLfloat yPos, GLFWwindo
 	elementBuffer = EBO(&indices[0], indices.size());
 	vertexArray.link(vertexBuffer, elementBuffer, 0);
 	onScreen = true;
+	logger.debugLog("PhysicsBall Created\n");
 }
 
 //this function handles the actual rendering of the object to the screen
@@ -366,7 +352,9 @@ void PhysicsBall::draw() {
 	glDrawElements(GL_TRIANGLES, (unsigned int)indices.size(), GL_UNSIGNED_INT, 0);
 }
 
-void PhysicsBall::move() {
-	//TODO actual implementation
-	vertices = vertices;
+//this function changes the position of the object
+glm::vec3 PhysicsBall::move() {
+	GLfloat deltaX = 0, deltaY = 0, deltaZ = 0;
+
+	return glm::vec3(deltaX, deltaY, deltaZ);
 }

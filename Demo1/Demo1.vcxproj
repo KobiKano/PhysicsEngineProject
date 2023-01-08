@@ -156,6 +156,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\source\Camera.cpp" />
     <ClCompile Include="src\source\Demo.cpp" />
     <ClCompile Include="src\source\EBO.cpp" />
     <ClCompile Include="src\source\Init.cpp" />
@@ -167,6 +168,7 @@
     <ClCompile Include="src\source\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\headers\Camera.h" />
     <ClInclude Include="src\headers\Demo.h" />
     <ClInclude Include="src\headers\EBO.h" />
     <ClInclude Include="src\headers\GLShaders.h" />

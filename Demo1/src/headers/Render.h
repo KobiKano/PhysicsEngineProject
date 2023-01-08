@@ -4,11 +4,15 @@
 #include <GLFW/glfw3.h>
 #include <string>
 #include <vector>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include "GLShaders.h"
 #include "Shader.h"
 #include "headers/Logger.h"
 #include "PhysicsBall.h"
 #include "VAO.h"
+#include "Camera.h"
 
 //fields for rendering process
 static std::vector<PhysicsBall*> objects;

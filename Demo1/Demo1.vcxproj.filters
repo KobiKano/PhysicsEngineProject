@@ -45,6 +45,9 @@
     <ClCompile Include="src\source\EBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\source\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\headers\Window.h">
@@ -75,6 +78,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\headers\EBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

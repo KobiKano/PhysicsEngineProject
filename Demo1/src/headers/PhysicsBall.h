@@ -6,7 +6,8 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <string>
-#include<math.h>
+#include <math.h>
+#include <glm/glm.hpp>
 #include "VBO.h"
 #include "EBO.h"
 #include "VAO.h"
@@ -30,14 +31,13 @@ public:
 	//defualt constructor
 	PhysicsBall();
 
-	PhysicsBall(GLfloat radius, GLfloat xPos,GLfloat yPos, GLFWwindow* window);
+	PhysicsBall(GLfloat radius, GLFWwindow* window);
 
 	//default destructor
 	~PhysicsBall();
 
 	//functions for class
-	void generate(GLfloat radius, GLfloat xPos, GLfloat yPos, GLFWwindow* window);
-
+	void generate(GLfloat radius, GLFWwindow* window);
 	void draw();
-	void move();
+	glm::vec3 move();
 };

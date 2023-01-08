@@ -2,7 +2,6 @@
 
 #include "headers/Logger.h"
 #include <glad/glad.h>
-#include <iostream>
 
 //this class creates shader objects to use in the graphics pipeline
 class Shader {
