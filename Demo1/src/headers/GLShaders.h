@@ -13,8 +13,9 @@ static const char* vert1 = "#version 330 core\n"
 "}\0";
 
 static const char* frag1 = "#version 330 core\n"
+"uniform vec3 color;\n"
 "out vec4 FragColor;\n"
 "void main()\n"
 "{\n"
-"FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+"FragColor = vec4(color, 1.0f);\n"
 "}\0";

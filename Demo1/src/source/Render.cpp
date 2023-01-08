@@ -50,9 +50,15 @@ void processInput(GLFWwindow* window, Camera& camera, float deltaTime) {
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		camera.cameraRight(cameraSpeed);
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-		camera.cameraRaise(cameraSpeed);
+		camera.cameraUp(cameraSpeed);
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 		camera.cameraDown(cameraSpeed);
+
+	//check if polygon state changed
+	if(glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	if (glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 //defualt constructor
@@ -69,6 +75,9 @@ Render::Render(GLFWwindow* window) {
 
 	//initialize shaders
 	shaderProgram = Shader(vert1, frag1);
+
+	//create floor
+	Box floor = Box();
 
 	//initialize camera
 	Camera camera = Camera();
@@ -87,9 +96,10 @@ Render::Render(GLFWwindow* window) {
 	//this is the generic render loop for the program
 	while (!glfwWindowShouldClose(window)) {
 		//set render parameters
-		glClearColor(0.0144f, 0.360f, 0.354f, 1.0f);
+		glClearColor(0.2f, 0.0885f, 0.520f, 0.5f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
+		glCullFace(GL_FRONT);
 
 
 		//define the shader
@@ -110,6 +120,13 @@ Render::Render(GLFWwindow* window) {
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
+		//set shader color for floor
+		int objectcolor = glGetUniformLocation(shaderProgram.ID, "color");
+		glUniform3f(objectcolor, 0.36f, 0.350f, 0.350f);
+
+		//draw floor
+		floor.draw();
+
 		//check framerate
 		currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
@@ -118,7 +135,10 @@ Render::Render(GLFWwindow* window) {
 		//checks latest key press
 		processInput(window, camera, deltaTime);
 
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		//set color for ball objects
+		objectcolor = glGetUniformLocation(shaderProgram.ID, "color");
+		glUniform3f(objectcolor, 0.76f, 0.722f, 0.722f);
+
 		//draw objects
 		for (int i = 0; i < objects.size(); i++) {
 			//check if max size reached
@@ -137,6 +157,7 @@ Render::Render(GLFWwindow* window) {
 
 		//checks for user interactions and updates current window buffer
 		glfwSwapBuffers(window);
+		glDisable(GL_CULL_FACE);
 		glfwPollEvents();
 	}
 	logger.debugLog("exiting render process\n");

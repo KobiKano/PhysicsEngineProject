@@ -13,6 +13,7 @@
 #include "PhysicsBall.h"
 #include "VAO.h"
 #include "Camera.h"
+#include "Box.h"
 
 //fields for rendering process
 static std::vector<PhysicsBall*> objects;

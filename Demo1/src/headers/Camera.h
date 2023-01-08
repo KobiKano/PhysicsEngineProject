@@ -6,13 +6,14 @@
 //this is the camera class
 //defines functionality for camera movement around the scene
 class Camera {
-private:
 	//fields for class
 	glm::vec3 cameraPos;
-	glm::vec3 cameraTarget;
 	glm::vec3 cameraDirection;
-	glm::vec3 cameraFront;
-	glm::vec3 cameraUp;
+	glm::vec3 cameraU;
+	glm::vec3 cameraR;
+
+	float pitch = 0.0f;
+	float yaw = 0.0f;
 
 public:
 
@@ -20,7 +21,7 @@ public:
 	Camera();
 
 	//functions for class
-	void cameraRaise(const float cameraSpeed);
+	void cameraUp(const float cameraSpeed);
 	void cameraDown(const float cameraSpeed);
 	void cameraForward(const float cameraSpeed);
 	void cameraBack(const float cameraSpeed);

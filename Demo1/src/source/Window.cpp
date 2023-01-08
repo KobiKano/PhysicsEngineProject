@@ -12,7 +12,7 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
 	//set viewport
 	glViewport(0, 0, width, height);
 	//assign colors to window
-	glClearColor(0.0144f, 0.360f, 0.354f, 1.0f);
+	glClearColor(0.2f, 0.0885f, 0.520f, 0.5f);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
