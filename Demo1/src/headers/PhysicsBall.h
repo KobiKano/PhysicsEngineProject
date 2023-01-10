@@ -27,11 +27,12 @@ public:
 	VBO vertexBuffer;
 	EBO elementBuffer;
 	VAO vertexArray;
+	std::string name;
 
 	//defualt constructor
 	PhysicsBall();
 
-	PhysicsBall(GLfloat radius, GLFWwindow* window);
+	PhysicsBall(GLfloat radius, GLFWwindow* window, std::string name);
 
 	//default destructor
 	~PhysicsBall();

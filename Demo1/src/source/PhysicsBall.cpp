@@ -311,7 +311,8 @@ PhysicsBall::~PhysicsBall() {
 }
 
 //this is the constructor for the class
-PhysicsBall::PhysicsBall(GLfloat radius, GLFWwindow* window) {
+PhysicsBall::PhysicsBall(GLfloat radius, GLFWwindow* window, std::string name) {
+	this->name = name;
 	generate(radius, window);
 }
 

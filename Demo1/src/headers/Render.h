@@ -14,15 +14,19 @@
 #include "VAO.h"
 #include "Camera.h"
 #include "Box.h"
+#include "headers/Engine.h"
 
-//fields for rendering process
+//fields for rendering process and physics
 static std::vector<PhysicsBall*> objects;
 static VAO vertexArray;
+static int objectsAdded = 0;
+static int objectsRemoved = 0;
 
 //This class starts the rendering process for the demo
 class Render {
-	//fields used to initialize graphics
+	//fields used to initialize graphics and physics
 	Shader shaderProgram;
+	PhysicsEngine physicsEngine;
 public:
 	//default constructor
 	Render();

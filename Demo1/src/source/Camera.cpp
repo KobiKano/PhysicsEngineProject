@@ -39,7 +39,7 @@ void Camera::cameraBack(const float cameraSpeed) {
 
 //this function moves the camera to the left
 void Camera::cameraLeft(const float cameraSpeed) {
-	yaw -= 7.0f * cameraSpeed;
+	yaw -= 8.0f * cameraSpeed;
 
 	cameraR = glm::vec3(cosf(glm::radians(yaw)), 0.0f, -sinf(glm::radians(yaw)));
 	cameraDirection = glm::cross(cameraR, cameraU);
@@ -49,7 +49,7 @@ void Camera::cameraLeft(const float cameraSpeed) {
 
 //this function moves the camera to the right
 void Camera::cameraRight(const float cameraSpeed) {
-	yaw += 7.0f * cameraSpeed;
+	yaw += 8.0f * cameraSpeed;
 
 	cameraR = glm::vec3(cosf(glm::radians(yaw)), 0.0f, -sinf(glm::radians(yaw)));
 	cameraDirection = glm::cross(cameraR, cameraU);

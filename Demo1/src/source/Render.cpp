@@ -8,24 +8,36 @@ static Logger logger(Logger::info);
 /*
 * this function handles the creation of a sphere object
 */
-void createSphereObject(GLFWwindow* window) {
+void createSphereObject(GLFWwindow* window, PhysicsEngine& physicsEngine) {
 	//create object
 	GLfloat radius = 0.1f;
-	PhysicsBall* object = new PhysicsBall(radius, window);
+	objectsAdded++;
+	PhysicsBall* object = new PhysicsBall(radius, window, "object" + std::to_string(objectsAdded));
+	logger.debugLog("objectName: " + object->name + "\n");
 	
 	//logger to check if correct indices and vertices print
 	logger.debugLog("size of vertices: " + to_string(object->vertices.size()) + "\n");
 	logger.debugLog("size of indices: " + to_string(object->indices.size()) + "\n");
 
-	//but object in vector
+	//put object in vector
 	objects.push_back(object);
+
+	//add to physics engine
+	float centerPos[3] = {0.0f, 1.0f, 0.0f};
+	float mass = 1.0f;
+	physicsEngine.registerObject(centerPos, radius, "object" + std::to_string(objectsAdded), PhysicsObject::PHYSICS_RIGID_BODY, PhysicsObject::PHYSICS_SPHERE, mass);
+
+	//add gravitational force
+	float direction[3] = { 0.0f, -1.0f, 0.0f };
+	physicsEngine.addForce("object" + std::to_string(objectsAdded), Force::PHYSICS_GRAVITATIONAL, 9.8f, direction);
+
 	logger.debugLog("Num PhysicsBalls: " + std::to_string(objects.size()) + "\n\n");
 }
 
 /*
 This fucntion checks the latest key press per frame
 */
-void processInput(GLFWwindow* window, Camera& camera, float deltaTime) {
+void processInput(GLFWwindow* window, Camera& camera, PhysicsEngine& physicsEngine, float deltaTime) {
 	//if the last key press was the escape key then the window will close
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
@@ -34,7 +46,7 @@ void processInput(GLFWwindow* window, Camera& camera, float deltaTime) {
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
 		//create object
 		logger.debugLog("Left Mouse clicked!\n");
-		createSphereObject(window);
+		createSphereObject(window, physicsEngine);
 		//disallow processing of events for small amount of time to prevent spam
 		glfwWaitEventsTimeout(0.4);
 	}
@@ -86,10 +98,15 @@ Render::Render(GLFWwindow* window) {
 	float deltaTime = 0.0f;
 	int width, height;
 
+	//initialize transformation matrices
+	glm::mat4 model = glm::mat4(1.0f);
+	glm::mat4 view = glm::mat4(1.0f);
+	glm::mat4 projection = glm::mat4(1.0f);
+
 	//add start buffer to window
 	glfwSwapBuffers(window);
 
-	logger.debugLog("finished initial render\n");
+	logger.debugLog("finished initial render\n\n");
 
 	//while loop to check if window close input detected
 	//if detected returns true and program terminates
@@ -105,11 +122,9 @@ Render::Render(GLFWwindow* window) {
 		//define the shader
 		shaderProgram.create();
 
-		//assign transformation matrices
-		glm::mat4 model = glm::mat4(1.0f);
-		glm::mat4 view = glm::mat4(1.0f);
-		glm::mat4 projection = glm::mat4(1.0f);
+		//set transformation matrices
 		glfwGetWindowSize(window, &width, &height);
+		model = glm::mat4(1.0f);
 		view = camera.view();
 		projection = glm::perspective(glm::radians(45.0f), (float)width / float(height), 0.1f, 100.0f);
 		int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
@@ -127,16 +142,7 @@ Render::Render(GLFWwindow* window) {
 		//draw floor
 		floor.draw();
 
-		//check framerate
-		currentFrame = glfwGetTime();
-		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
-		
-		//checks latest key press
-		processInput(window, camera, deltaTime);
-
 		//set color for ball objects
-		objectcolor = glGetUniformLocation(shaderProgram.ID, "color");
 		glUniform3f(objectcolor, 0.76f, 0.722f, 0.722f);
 
 		//draw objects
@@ -146,14 +152,33 @@ Render::Render(GLFWwindow* window) {
 				//delete first object
 				delete objects.front();
 				objects.erase(objects.begin());
+				objectsRemoved++;
 			}
 			//check if off screen
 			if (!objects[i]->onScreen) {
 				objects.erase(objects.begin() + i);
+				objectsRemoved++;
 			}
+			//check new position based on physicsEngine
+			physicsEngine.updatePosition(objects[i]->name, deltaTime);
+
+			//set new transformation matrix based on object position in physicsEngine
+			float* positionf = physicsEngine.getPosition(objects[i]->name);
+			glm::vec3 position = glm::vec3(positionf[0], positionf[1], positionf[2]);
+			model = glm::translate(model, position);
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+			model = glm::mat4(1.0f);
 			//draw objects
 			objects[i]->draw();
 		}
+
+		//check framerate
+		currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+
+		//checks latest key press
+		processInput(window, camera, physicsEngine, deltaTime);
 
 		//checks for user interactions and updates current window buffer
 		glfwSwapBuffers(window);
@@ -166,6 +191,7 @@ Render::Render(GLFWwindow* window) {
 //this function ends all rendering processes
 void Render::terminate() {
 	logger.debugLog("terminating render process\n");
+	physicsEngine.terminate();
 	shaderProgram.terminate();
 	vertexArray.terminate();
 }

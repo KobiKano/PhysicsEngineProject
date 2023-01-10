@@ -128,10 +128,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\headers\Engine.h" />
+    <ClInclude Include="src\headers\Force.h" />
     <ClInclude Include="src\headers\Logger.h" />
+    <ClInclude Include="src\headers\PhysicsHandler.h" />
+    <ClInclude Include="src\headers\PhysicsObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\source\Engine.cpp" />
+    <ClCompile Include="src\source\Force.cpp" />
+    <ClCompile Include="src\source\PhysicsHandler.cpp" />
+    <ClCompile Include="src\source\PhysicsObject.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
