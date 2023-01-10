@@ -340,7 +340,7 @@ void PhysicsBall::generate(GLfloat radius, GLFWwindow* window) {
 void PhysicsBall::draw() {
 	//check if vertices off screen
 	for (int i = 0; i < 3; i++) {
-		if (position[i] > 1.0f || position[i] < -3.0f) {
+		if (position[i] > 2.0f || position[i] < -3.0f) {
 			onScreen = false;
 		}
 	}

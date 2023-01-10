@@ -23,7 +23,7 @@ void createSphereObject(GLFWwindow* window, PhysicsEngine& physicsEngine) {
 	objects.push_back(object);
 
 	//add to physics engine
-	float centerPos[3] = {0.0f, 1.0f, 0.0f};
+	float centerPos[3] = {0.0f, 2.0f, 0.0f};
 	float mass = 1.0f;
 	physicsEngine.registerObject(centerPos, radius, "object" + std::to_string(objectsAdded), PhysicsObject::PHYSICS_RIGID_BODY, PhysicsObject::PHYSICS_SPHERE, mass);
 
@@ -98,6 +98,11 @@ Render::Render(GLFWwindow* window) {
 	float deltaTime = 0.0f;
 	int width, height;
 
+	//Since I do not want to update the physics engine every frame
+	//The following variables are used to keep track of total time and only update every other frame
+	int frameCounter = 0;
+	float physicsTime = 0.0f;
+
 	//initialize transformation matrices
 	glm::mat4 model = glm::mat4(1.0f);
 	glm::mat4 view = glm::mat4(1.0f);
@@ -116,8 +121,14 @@ Render::Render(GLFWwindow* window) {
 		glClearColor(0.2f, 0.0885f, 0.520f, 0.5f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
-		glCullFace(GL_FRONT);
 
+		//increase check if physics time should be reset
+		if (frameCounter == 2) {
+			physicsTime = 0.0f;
+			frameCounter = 0;
+		}
+		//increment frameCounter
+		frameCounter++;
 
 		//define the shader
 		shaderProgram.create();
@@ -166,8 +177,11 @@ Render::Render(GLFWwindow* window) {
 
 		//draw objects
 		for (int i = 0; i < objects.size(); i++) {
-			//check new position based on physicsEngine
-			physicsEngine.updatePosition(objects[i]->name, deltaTime);
+			//check if physicsEngine should be updated
+			if (frameCounter == 2) {
+				//check new position based on physicsEngine
+				physicsEngine.updatePosition(objects[i]->name, physicsTime);
+			}
 
 			//set new transformation matrix based on object position in physicsEngine
 			float* positionf = physicsEngine.getPosition(objects[i]->name);
@@ -179,6 +193,7 @@ Render::Render(GLFWwindow* window) {
 			model = glm::translate(model, position);
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 			model = glm::mat4(1.0f);
+			
 			//draw objects
 			objects[i]->draw();
 		}
@@ -187,13 +202,13 @@ Render::Render(GLFWwindow* window) {
 		currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
+		physicsTime += deltaTime;
 
 		//checks latest key press
 		processInput(window, camera, physicsEngine, deltaTime);
 
 		//checks for user interactions and updates current window buffer
 		glfwSwapBuffers(window);
-		glDisable(GL_CULL_FACE);
 		glfwPollEvents();
 	}
 	logger.debugLog("exiting render process\n");
