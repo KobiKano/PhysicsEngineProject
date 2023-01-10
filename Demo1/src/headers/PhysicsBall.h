@@ -28,6 +28,7 @@ public:
 	EBO elementBuffer;
 	VAO vertexArray;
 	std::string name;
+	float position[3];
 
 	//defualt constructor
 	PhysicsBall();
@@ -40,5 +41,4 @@ public:
 	//functions for class
 	void generate(GLfloat radius, GLFWwindow* window);
 	void draw();
-	glm::vec3 move();
 };

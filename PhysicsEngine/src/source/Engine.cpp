@@ -1,7 +1,7 @@
 #include "../headers/Engine.h"
 
 //initialize logger
-static Logger logger = Logger(Logger::debug);
+static Logger logger = Logger(Logger::info);
 
 //This function maps a new object to the map of physics objects
 void PhysicsEngine::registerObject(float* centerPos, float radius, std::string name, PhysicsObject::ObjectType objectType, PhysicsObject::ObjectShape objectShape, float mass) {

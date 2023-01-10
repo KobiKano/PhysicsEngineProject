@@ -145,25 +145,36 @@ Render::Render(GLFWwindow* window) {
 		//set color for ball objects
 		glUniform3f(objectcolor, 0.76f, 0.722f, 0.722f);
 
-		//draw objects
+		//check if max size reached
+		if (objects.size() == 20) {
+			//delete first object
+			physicsEngine.deleteObject(objects[0]->name);
+			delete objects.front();
+			objects.erase(objects.begin());
+			objectsRemoved++;
+		}
+
+		//delete object that are off screen
 		for (int i = 0; i < objects.size(); i++) {
-			//check if max size reached
-			if (objects.size() == 20) {
-				//delete first object
-				delete objects.front();
-				objects.erase(objects.begin());
-				objectsRemoved++;
-			}
 			//check if off screen
 			if (!objects[i]->onScreen) {
+				physicsEngine.deleteObject(objects[i]->name);
 				objects.erase(objects.begin() + i);
 				objectsRemoved++;
 			}
+		}
+
+		//draw objects
+		for (int i = 0; i < objects.size(); i++) {
 			//check new position based on physicsEngine
 			physicsEngine.updatePosition(objects[i]->name, deltaTime);
 
 			//set new transformation matrix based on object position in physicsEngine
 			float* positionf = physicsEngine.getPosition(objects[i]->name);
+			objects[i]->position[0] = positionf[0];
+			objects[i]->position[1] = positionf[1];
+			objects[i]->position[2] = positionf[2];
+
 			glm::vec3 position = glm::vec3(positionf[0], positionf[1], positionf[2]);
 			model = glm::translate(model, position);
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));

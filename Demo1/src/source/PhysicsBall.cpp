@@ -313,6 +313,9 @@ PhysicsBall::~PhysicsBall() {
 //this is the constructor for the class
 PhysicsBall::PhysicsBall(GLfloat radius, GLFWwindow* window, std::string name) {
 	this->name = name;
+	position[0] = 0.0f;
+	position[1] = 1.0f;
+	position[2] = 0.0f;
 	generate(radius, window);
 }
 
@@ -336,26 +339,13 @@ void PhysicsBall::generate(GLfloat radius, GLFWwindow* window) {
 //this function handles the actual rendering of the object to the screen
 void PhysicsBall::draw() {
 	//check if vertices off screen
-	int count = 0;
-	for (int i = 0; i < vertices.size(); i++) {
-		if ((vertices[i] > 1.0f) || (vertices[i] < -1.0f)) {
-			count++;
-		}
-		//check if over half of the vertices are out of the screen
-		if (count >= (vertices.size() / 2)) {
+	for (int i = 0; i < 3; i++) {
+		if (position[i] > 1.0f || position[i] < -3.0f) {
 			onScreen = false;
-			return;
 		}
 	}
 
 	//write object to openGL
 	vertexArray.bind();
 	glDrawElements(GL_TRIANGLES, (unsigned int)indices.size(), GL_UNSIGNED_INT, 0);
-}
-
-//this function changes the position of the object
-glm::vec3 PhysicsBall::move() {
-	GLfloat deltaX = 0, deltaY = 0, deltaZ = 0;
-
-	return glm::vec3(deltaX, deltaY, deltaZ);
 }

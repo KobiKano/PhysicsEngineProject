@@ -1,7 +1,7 @@
 #include "../headers/PhysicsObject.h"
 
 //initialize logger
-static Logger logger = Logger(Logger::debug);
+static Logger logger = Logger(Logger::info);
 
 //This is the constructor for the physics object class
 PhysicsObject::PhysicsObject(float centerPos[3], float radius, std::string name, ObjectType objectType, ObjectShape objectShape, float mass) {
