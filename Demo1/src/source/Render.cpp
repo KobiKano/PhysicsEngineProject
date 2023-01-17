@@ -10,9 +10,9 @@ static Logger logger(Logger::info);
 */
 void createSphereObject(GLFWwindow* window, PhysicsEngine& physicsEngine) {
 	//create object
-	GLfloat radius = 0.1f;
+	GLfloat radius[3] = { 0.1f, 0.1f, 0.1f };
 	objectsAdded++;
-	PhysicsBall* object = new PhysicsBall(radius, window, "object" + std::to_string(objectsAdded));
+	PhysicsBall* object = new PhysicsBall(radius[0], window, "object" + std::to_string(objectsAdded));
 	logger.debugLog("objectName: " + object->name + "\n");
 	
 	//logger to check if correct indices and vertices print
@@ -23,7 +23,7 @@ void createSphereObject(GLFWwindow* window, PhysicsEngine& physicsEngine) {
 	objects.push_back(object);
 
 	//add to physics engine
-	float centerPos[3] = {0.0f, 2.0f, 0.0f};
+	float centerPos[3] = {0.0f, 3.0f, 0.0f};
 	float mass = 1.0f;
 	physicsEngine.registerObject(centerPos, radius, "object" + std::to_string(objectsAdded), PhysicsObject::PHYSICS_RIGID_BODY, PhysicsObject::PHYSICS_SPHERE, mass);
 
@@ -88,8 +88,11 @@ Render::Render(GLFWwindow* window) {
 	//initialize shaders
 	shaderProgram = Shader(vert1, frag1);
 
-	//create floor
+	//create floor and add to physics engine
 	Box floor = Box();
+	float centerPos[3] = { 0.0f, -0.95f, 0.0f };
+	float radius[3] = { 1.0f, 0.05f, 1.0f };
+	physicsEngine.registerObject(centerPos, radius, "floor", PhysicsObject::PHYSICS_STATIC, PhysicsObject::PHYSICS_CUBE, 10.0f);
 
 	//initialize camera
 	Camera camera = Camera();
@@ -179,6 +182,8 @@ Render::Render(GLFWwindow* window) {
 		for (int i = 0; i < objects.size(); i++) {
 			//check if physicsEngine should be updated
 			if (frameCounter == 2) {
+				//check for collisions
+				physicsEngine.checkCollisions(objects[i]->name);
 				//check new position based on physicsEngine
 				physicsEngine.updatePosition(objects[i]->name, physicsTime);
 			}

@@ -3,8 +3,20 @@
 //initialize logger
 static Logger logger = Logger(Logger::info);
 
+//default constructor
+PhysicsEngine::PhysicsEngine() {
+	this->airResistance = 0.0f;
+	collisionHandler = CollisionHandler(&objectTable, 0.9f);
+}
+
+//constructor
+PhysicsEngine::PhysicsEngine(float airResistance) {
+	this->airResistance = airResistance;
+	collisionHandler = CollisionHandler(&objectTable, 0.9f);
+}
+
 //This function maps a new object to the map of physics objects
-void PhysicsEngine::registerObject(float* centerPos, float radius, std::string name, PhysicsObject::ObjectType objectType, PhysicsObject::ObjectShape objectShape, float mass) {
+void PhysicsEngine::registerObject(float* centerPos, float radius[3], std::string name, PhysicsObject::ObjectType objectType, PhysicsObject::ObjectShape objectShape, float mass) {
 	objectTable[name] = new PhysicsObject(centerPos, radius, name, objectType, objectShape, mass);
 	logger.debugLog("objectTable size: " + std::to_string(objectTable.size()) + "\n");
 }
@@ -19,15 +31,25 @@ void PhysicsEngine::addForce(std::string name, Force::ForceType force, float con
 	objectTable[name]->addForce(force, constant, direction);
 }
 
+//this function removes a force on an object
+void PhysicsEngine::removeForce(std::string name, Force::ForceType force, float constant, float* direction) {
+	objectTable[name]->removeForce(force, constant, direction);
+}
+
 //this function fetches the current position of the object
 float* PhysicsEngine::getPosition(std::string name) {
 	return objectTable[name]->getCenterPos();
 }
 
+//this function checks for collisions
+void PhysicsEngine::checkCollisions(std::string name) {
+	collisionHandler.calcCollisions();
+}
+
 //this function updates the position of the object
 void PhysicsEngine::updatePosition(std::string name, float deltaTime) {
 	PhysicsObject* currObject = objectTable[name];
-	PhysicsHandler handler = PhysicsHandler(currObject, deltaTime);
+	PhysicsHandler handler = PhysicsHandler(currObject, deltaTime, airResistance);
 }
 
 //this function deletes all heap allocated memory of a physics object

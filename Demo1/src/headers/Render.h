@@ -26,7 +26,7 @@ static int objectsRemoved = 0;
 class Render {
 	//fields used to initialize graphics and physics
 	Shader shaderProgram;
-	PhysicsEngine physicsEngine;
+	PhysicsEngine physicsEngine = PhysicsEngine(0.0001f);
 public:
 	//default constructor
 	Render();

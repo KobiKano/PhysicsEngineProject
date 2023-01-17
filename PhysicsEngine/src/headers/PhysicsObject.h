@@ -19,7 +19,7 @@ public:
 private:
 	//these fields are used to store information about the object
 	float centerPos[3];
-	float radius;
+	float radius[3]; //radius here is defined as distance from center point to each side for cube shapes
 	std::string name;
 	ObjectType objectType;
 	ObjectShape objectShape;
@@ -29,17 +29,18 @@ private:
 public:
 	std::vector<Force> forces;
 	//constructor for class
-	PhysicsObject(float centerPos[3], float radius, std::string name, ObjectType objectType, ObjectShape objectShape, float mass);
+	PhysicsObject(float centerPos[3], float radius[3], std::string name, ObjectType objectType, ObjectShape objectShape, float mass);
 
 	//functions for class
 	float* getCenterPos();
 	void setCenterPos(float centerPoint[3]);
 	void addForce(Force::ForceType force, float magnitude, float direction[3]);
+	void removeForce(Force::ForceType force, float magnitude, float direction[3]);
 	float* getVelocity();
 	void setVelocity(float newVelocity[3]);
 	float getMass();
 	void setMass(float mass);
-	float getRadius();
+	float* getRadius();
 	std::string getName();
 	ObjectType getObjectType();
 	ObjectShape getObjectShape();

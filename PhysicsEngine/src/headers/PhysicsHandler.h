@@ -12,6 +12,7 @@ struct vec3 {
 //this class handles all physics position calculations
 class PhysicsHandler {
 	//private fields of this class
+	float airResistance;
 	vec3 forces;
 	float nextPos[3];
 	float velocity[3];
@@ -24,7 +25,7 @@ class PhysicsHandler {
 	void calcPosition(PhysicsObject* currObject, float deltaTime);
 public:
 	//constructor for this class
-	PhysicsHandler(PhysicsObject* currObject, float deltaTime);
+	PhysicsHandler(PhysicsObject* currObject, float deltaTime, float airResistance);
 
 	//functions for this class
 	float* getNextPos();

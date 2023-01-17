@@ -4,7 +4,7 @@
 struct Force {
 	//fields for this class
 	enum ForceType {
-		PHYSICS_GRAVITATIONAL = 0, PHYSICS_SPRING, PHYSICS_NORMAL
+		PHYSICS_GRAVITATIONAL = 0, PHYSICS_SPRING, PHYSICS_NORMAL, PHYSICS_FRICTION, PHYSICS_IMPULSE
 	};
 	float magnitude;
 	float direction[3];

@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\headers\CollisionHandler.h" />
     <ClInclude Include="src\headers\Engine.h" />
     <ClInclude Include="src\headers\Force.h" />
     <ClInclude Include="src\headers\Logger.h" />
@@ -134,6 +135,7 @@
     <ClInclude Include="src\headers\PhysicsObject.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\source\CollisionHandler.cpp" />
     <ClCompile Include="src\source\Engine.cpp" />
     <ClCompile Include="src\source\Force.cpp" />
     <ClCompile Include="src\source\PhysicsHandler.cpp" />

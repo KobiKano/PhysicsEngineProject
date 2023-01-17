@@ -288,17 +288,6 @@ void normalizeVertices(GLfloat radius, std::vector<GLfloat> &vertices) {
 	}
 }
 
-/*
-This function takes the vertices from a isohedron and the position of the mouse at the time of creation
-translates every vertex to be centered about a point (0,1,0)
-*/
-void translateToSpawn(std::vector<GLfloat>& vertices) {
-	for (int i = 0; i < vertices.size(); i += 3) {
-		//yPos is subtracted because of how glfw works
-		vertices[i + 1] += 1.0f;
-	}
-}
-
 //default constuctor
 PhysicsBall::PhysicsBall() {}
 
@@ -325,7 +314,6 @@ void PhysicsBall::generate(GLfloat radius, GLFWwindow* window) {
 	subdivideSurfaces(radius, vertices, indices);
 	normalizeVertices(radius, vertices);
 	//move created object to be centered around mouse click position
-	translateToSpawn(vertices);
 	//bind data to openGL
 	vertexArray = VAO(1);
 	vertexArray.bind();
@@ -340,7 +328,7 @@ void PhysicsBall::generate(GLfloat radius, GLFWwindow* window) {
 void PhysicsBall::draw() {
 	//check if vertices off screen
 	for (int i = 0; i < 3; i++) {
-		if (position[i] > 2.0f || position[i] < -3.0f) {
+		if (position[i] > 5.0f || position[i] < -3.0f) {
 			onScreen = false;
 		}
 	}
