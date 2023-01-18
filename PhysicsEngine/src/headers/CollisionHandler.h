@@ -2,6 +2,8 @@
 
 #include<map>
 #include <string>
+#include <cstdlib>
+#include <ctime>
 #include "PhysicsObject.h"
 
 //this class is used to handle all collisions within the physics world
@@ -35,4 +37,5 @@ public:
 
 	//functions for class
 	void calcCollisions();
+	void resetFields();
 };

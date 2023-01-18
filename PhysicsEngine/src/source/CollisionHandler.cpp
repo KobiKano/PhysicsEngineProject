@@ -131,6 +131,19 @@ void CollisionHandler::resolveCollsions() {
 	float* object2Velocity;
 	float object1Mass;
 	float object2Mass;
+	float randomX;
+	float randomY;
+	float randomZ;
+
+	//allocate memory for force
+	float forceMagnitude;
+	float forceDirection[3];
+
+	//allocate memory for reposition calculations
+	float newPos[3];
+	float distance[3];
+	float magnitudeDistance;
+	float overlap[3];
 
 	//initialzie iterator to iterate through map of collisions
 	std::map<PhysicsObject*, PhysicsObject*>::iterator iterator = collisionMap.begin();
@@ -140,6 +153,8 @@ void CollisionHandler::resolveCollsions() {
 		object1 = iterator->first;
 		object2 = iterator->second;
 
+		logger.debugLog("Collision between: " + object1->getName() + " and " + object2->getName() + "\n");
+
 		//check if first object is static
 		if (object1->getObjectType() == PhysicsObject::PHYSICS_STATIC) {
 			//find axis of collision
@@ -148,34 +163,90 @@ void CollisionHandler::resolveCollsions() {
 			float distY = fabsf(object1->getCenterPos()[1] - object2->getCenterPos()[1]);
 			float distZ = fabsf(object1->getCenterPos()[2] - object2->getCenterPos()[2]);
 
+			//find random value
+			randomX  = static_cast <float> (rand()) / static_cast <float> (RAND_MAX/0.5f) - 0.25f;
+			randomY = static_cast <float> (rand()) / static_cast <float> (RAND_MAX / 0.5f) - 0.25f;
+			randomZ = static_cast <float> (rand()) / static_cast <float> (RAND_MAX / 0.5f) - 0.25f;
+
 			//check if collision on xz plane
 			if (distY > object1->getRadius()[1]) {
 				//reduce energy of object
 				object2Velocity = object2->getVelocity();
-				object2Velocity[0] = percentEnergyRemaining * object2Velocity[0];
-				object2Velocity[1] = -percentEnergyRemaining * object2Velocity[1]; //invert y-velocity
-				object2Velocity[2] = percentEnergyRemaining * object2Velocity[2];
+				object2Velocity[0] = percentEnergyRemaining * object2Velocity[0] + randomX;
+				object2Velocity[1] = -percentEnergyRemaining * object2Velocity[1] + randomY; //invert y-velocity
+				object2Velocity[2] = percentEnergyRemaining * object2Velocity[2] + randomZ;
 				object2->setVelocity(object2Velocity);
+
+				//find collision normal force
+				forceMagnitude = 0.0f;
+				for (int i = 0; i < object2->forces.size(); i++) {
+					forceMagnitude += object2->forces[i].magnitude * object2->forces[i].direction[1];
+				}
+				forceDirection[0] = 0.0f;
+				forceDirection[1] = 1.0f;
+				forceDirection[2] = 0.0f;
+				//add force
+				object2->addForce(Force::PHYSICS_COLLISION_NORMAL, forceMagnitude, forceDirection);
+
+				//make sure object position is no longer in static object
+				newPos[0] = object2->getCenterPos()[0];
+				newPos[1] = object1->getCenterPos()[1] + object1->getRadius()[1] + object2->getRadius()[1];
+				newPos[2] = object2->getCenterPos()[2];
+				object2->setCenterPos(newPos);
 			}
 
 			//check if collision on yz plane
 			if (distX > object1->getRadius()[0]) {
 				//reduce energy of object
 				object2Velocity = object2->getVelocity();
-				object2Velocity[0] = -percentEnergyRemaining * object2Velocity[0]; //invert x-velocity
-				object2Velocity[1] = percentEnergyRemaining * object2Velocity[1]; 
-				object2Velocity[2] = percentEnergyRemaining * object2Velocity[2];
+				object2Velocity[0] = -percentEnergyRemaining * object2Velocity[0] + randomX; //invert x-velocity
+				object2Velocity[1] = percentEnergyRemaining * object2Velocity[1] + randomY;
+				object2Velocity[2] = percentEnergyRemaining * object2Velocity[2] + randomZ;
 				object2->setVelocity(object2Velocity);
+
+				//find collision normal force
+				forceMagnitude = 0.0f;
+				for (int i = 0; i < object2->forces.size(); i++) {
+					forceMagnitude += object2->forces[i].magnitude * object2->forces[i].direction[0];
+				}
+				forceDirection[0] = 1.0f;
+				forceDirection[1] = 0.0f;
+				forceDirection[2] = 0.0f;
+				//add force
+				object2->addForce(Force::PHYSICS_COLLISION_NORMAL, forceMagnitude, forceDirection);
+
+				//make sure object position is no longer in static object
+				newPos[0] = object1->getCenterPos()[0] + object1->getRadius()[0] + object2->getRadius()[0];
+				newPos[1] = object2->getCenterPos()[1];
+				newPos[2] = object2->getCenterPos()[2];
+				object2->setCenterPos(newPos);
 			}
 
 			//check if collision on xy plane
 			if (distZ > object1->getRadius()[2]) {
 				//reduce energy of object
 				object2Velocity = object2->getVelocity();
-				object2Velocity[0] = percentEnergyRemaining * object2Velocity[0];
-				object2Velocity[1] = percentEnergyRemaining * object2Velocity[1];
-				object2Velocity[2] = -percentEnergyRemaining * object2Velocity[2]; //invert z-velocity
+				object2Velocity[0] = percentEnergyRemaining * object2Velocity[0] + randomX;
+				object2Velocity[1] = percentEnergyRemaining * object2Velocity[1] + randomY;
+				object2Velocity[2] = -percentEnergyRemaining * object2Velocity[2] + randomZ; //invert z-velocity
 				object2->setVelocity(object2Velocity);
+
+				//find collision normal force
+				forceMagnitude = 0.0f;
+				for (int i = 0; i < object2->forces.size(); i++) {
+					forceMagnitude += object2->forces[i].magnitude * object2->forces[i].direction[2];
+				}
+				forceDirection[0] = 0.0f;
+				forceDirection[1] = 0.0f;
+				forceDirection[2] = 1.0f;
+				//add force
+				object2->addForce(Force::PHYSICS_COLLISION_NORMAL, forceMagnitude, forceDirection);
+
+				//make sure object position is no longer in static object
+				newPos[0] = object2->getCenterPos()[0];
+				newPos[1] = object2->getCenterPos()[1];
+				newPos[2] = object1->getCenterPos()[2] + object1->getRadius()[2] + object2->getRadius()[2];
+				object2->setCenterPos(newPos);
 			}
 		}
 
@@ -187,37 +258,93 @@ void CollisionHandler::resolveCollsions() {
 			float distY = fabsf(object1->getCenterPos()[1] - object2->getCenterPos()[1]);
 			float distZ = fabsf(object1->getCenterPos()[2] - object2->getCenterPos()[2]);
 
+			//find random value
+			randomX = static_cast <float> (rand()) / static_cast <float> (RAND_MAX / 0.5f) - 0.25f;
+			randomY = static_cast <float> (rand()) / static_cast <float> (RAND_MAX / 0.5f) - 0.25f;
+			randomZ = static_cast <float> (rand()) / static_cast <float> (RAND_MAX / 0.5f) - 0.25f;
+
 			//check if collision on xz plane
 			if (distY > object2->getRadius()[1]) {
 				//reduce energy of object
 				object1Velocity = object1->getVelocity();
-				object1Velocity[0] = percentEnergyRemaining * object1Velocity[0];
-				object1Velocity[1] = -percentEnergyRemaining * object1Velocity[1]; //invert y-velocity
-				object1Velocity[2] = percentEnergyRemaining * object1Velocity[2];
+				object1Velocity[0] = percentEnergyRemaining * object1Velocity[0] + randomX;
+				object1Velocity[1] = -percentEnergyRemaining * object1Velocity[1] + randomY; //invert y-velocity
+				object1Velocity[2] = percentEnergyRemaining * object1Velocity[2] + randomZ;
 				object1->setVelocity(object1Velocity);
+
+				//find collision normal force
+				forceMagnitude = 0.0f;
+				for (int i = 0; i < object1->forces.size(); i++) {
+					forceMagnitude += object1->forces[i].magnitude * object1->forces[i].direction[1];
+				}
+				forceDirection[0] = 0.0f;
+				forceDirection[1] = 1.0f;
+				forceDirection[2] = 0.0f;
+				//add force
+				object1->addForce(Force::PHYSICS_COLLISION_NORMAL, forceMagnitude, forceDirection);
+
+				//make sure object position is no longer in static object
+				newPos[0] = object1->getCenterPos()[0];
+				newPos[1] = object2->getCenterPos()[1] + object2->getRadius()[1] + object1->getRadius()[1];
+				newPos[2] = object1->getCenterPos()[2];
+				object1->setCenterPos(newPos);
 			}
 
 			//check if collision on yz plane
 			if (distX > object2->getRadius()[0]) {
 				//reduce energy of object
 				object1Velocity = object1->getVelocity();
-				object1Velocity[0] = -percentEnergyRemaining * object1Velocity[0]; //invert x-velocity
-				object1Velocity[1] = percentEnergyRemaining * object1Velocity[1];
-				object1Velocity[2] = percentEnergyRemaining * object1Velocity[2];
+				object1Velocity[0] = -percentEnergyRemaining * object1Velocity[0] + randomX; //invert x-velocity
+				object1Velocity[1] = percentEnergyRemaining * object1Velocity[1] + randomY;
+				object1Velocity[2] = percentEnergyRemaining * object1Velocity[2] + randomZ;
 				object1->setVelocity(object1Velocity);
+
+				//find collision normal force
+				forceMagnitude = 0.0f;
+				for (int i = 0; i < object1->forces.size(); i++) {
+					forceMagnitude += object1->forces[i].magnitude * object1->forces[i].direction[0];
+				}
+				forceDirection[0] = 1.0f;
+				forceDirection[1] = 0.0f;
+				forceDirection[2] = 0.0f;
+				//add force
+				object1->addForce(Force::PHYSICS_COLLISION_NORMAL, forceMagnitude, forceDirection);
+
+				//make sure object position is no longer in static object
+				newPos[0] = object2->getCenterPos()[0] + object2->getRadius()[0] + object1->getRadius()[0];
+				newPos[1] = object1->getCenterPos()[1];
+				newPos[2] = object1->getCenterPos()[2];
+				object1->setCenterPos(newPos);
 			}
 
 			//check if collision on xy plane
 			if (distZ > object2->getRadius()[2]) {
 				//reduce energy of object
 				object1Velocity = object1->getVelocity();
-				object1Velocity[0] = percentEnergyRemaining * object1Velocity[0];
-				object1Velocity[1] = percentEnergyRemaining * object1Velocity[1];
-				object1Velocity[2] = -percentEnergyRemaining * object1Velocity[2]; //invert z-velocity
+				object1Velocity[0] = percentEnergyRemaining * object1Velocity[0] + randomX;
+				object1Velocity[1] = percentEnergyRemaining * object1Velocity[1] + randomY;
+				object1Velocity[2] = -percentEnergyRemaining * object1Velocity[2] + randomZ; //invert z-velocity
 				object1->setVelocity(object1Velocity);
+
+				//find collision normal force
+				forceMagnitude = 0.0f;
+				for (int i = 0; i < object1->forces.size(); i++) {
+					forceMagnitude += object1->forces[i].magnitude * object1->forces[i].direction[2];
+				}
+				forceDirection[0] = 0.0f;
+				forceDirection[1] = 0.0f;
+				forceDirection[2] = 1.0f;
+				//add force
+				object1->addForce(Force::PHYSICS_COLLISION_NORMAL, forceMagnitude, forceDirection);
+
+				//make sure object position is no longer in static object
+				newPos[0] = object1->getCenterPos()[0];
+				newPos[1] = object1->getCenterPos()[1];
+				newPos[2] = object2->getCenterPos()[2] + object2->getRadius()[2] + object1->getRadius()[2];
+				object1->setCenterPos(newPos);
 			}
 		}
-
+		
 		//if neither objects are static do normal momentum based collision
 		else {
 			//store mass and velocity
@@ -237,7 +364,68 @@ void CollisionHandler::resolveCollsions() {
 
 			object1->setVelocity(object1Velocity);
 			object2->setVelocity(object2Velocity);
+
+			//make sure objects no longer overlap
+			//find distance between center points
+			distance[0] = object2->getCenterPos()[0] - object1->getCenterPos()[0];  //points from object 1 to object 2
+			distance[1] = object2->getCenterPos()[1] - object1->getCenterPos()[1];
+			distance[2] = object2->getCenterPos()[2] - object1->getCenterPos()[2];
+
+			//check if distance is zero
+			magnitudeDistance = sqrtf(powf(distance[0], 2) + powf(distance[1], 2) + powf(distance[2], 2));
+			if (magnitudeDistance == 0.0f) {
+				//set new pos for object 1
+				newPos[0] = object1->getCenterPos()[0] + object2->getRadius()[0];
+				newPos[1] = object1->getCenterPos()[1] + object2->getRadius()[1];
+				newPos[2] = object1->getCenterPos()[2] + object2->getRadius()[2];
+				object1->setCenterPos(newPos);
+
+				//set new pos for object 2
+				newPos[0] = object2->getCenterPos()[0] + object1->getRadius()[0];
+				newPos[1] = object2->getCenterPos()[1] + object1->getRadius()[1];
+				newPos[2] = object2->getCenterPos()[2] + object1->getRadius()[2];
+				object2->setCenterPos(newPos);
+
+				//go to next iteration of loop
+				continue;
+			}
+
+			//find relative overlap x
+			if (distance[0] > 0.0f) {
+				overlap[0] = -fabsf((object1->getCenterPos()[0] + object1->getRadius()[0]) - (object2->getCenterPos()[0] - object2->getRadius()[0]));
+			}
+			else {
+				overlap[0] = fabsf((object2->getCenterPos()[0] + object2->getRadius()[0]) - (object1->getCenterPos()[0] - object1->getRadius()[0]));
+			}
+
+			//find relative overlap y
+			if (distance[1] > 0.0f) {
+				overlap[1] = -fabsf((object1->getCenterPos()[1] + object1->getRadius()[1]) - (object2->getCenterPos()[1] - object2->getRadius()[1]));
+			}
+			else {
+				overlap[1] = fabsf((object2->getCenterPos()[1] + object2->getRadius()[1]) - (object1->getCenterPos()[1] - object1->getRadius()[1]));
+			}
+
+			//find relative overlap z
+			if (distance[2] > 0.0f) {
+				overlap[2] = -fabsf((object1->getCenterPos()[2] + object1->getRadius()[2]) - (object2->getCenterPos()[2] - object2->getRadius()[2]));
+			}
+			else {
+				overlap[2] = fabsf((object2->getCenterPos()[2] + object2->getRadius()[2]) - (object1->getCenterPos()[2] - object1->getRadius()[2]));
+			}
+
+			//calculate new position
+			newPos[0] = object1->getCenterPos()[0] + overlap[0] / 2;
+			newPos[1] = object1->getCenterPos()[1] + overlap[1] / 2;
+			newPos[2] = object1->getCenterPos()[2] + overlap[2] / 2;
+			object1->setCenterPos(newPos);
+
+			newPos[0] = object2->getCenterPos()[0] - overlap[0] / 2;
+			newPos[1] = object2->getCenterPos()[1] - overlap[1] / 2;
+			newPos[2] = object2->getCenterPos()[2] - overlap[2] / 2;
+			object2->setCenterPos(newPos);
 		}
+		
 
 		//increment iterator
 		iterator++;
@@ -249,4 +437,10 @@ void CollisionHandler::calcCollisions() {
 	findPossibleCollisions();
 	checkCollisions();
 	resolveCollsions();
+}
+
+//this function resets all fields within the class
+void CollisionHandler::resetFields() {
+	possibleCollisions.clear();
+	collisionMap.clear();
 }

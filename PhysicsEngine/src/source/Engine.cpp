@@ -6,13 +6,13 @@ static Logger logger = Logger(Logger::info);
 //default constructor
 PhysicsEngine::PhysicsEngine() {
 	this->airResistance = 0.0f;
-	collisionHandler = CollisionHandler(&objectTable, 0.9f);
+	collisionHandler = CollisionHandler(&objectTable, 0.7f);
 }
 
 //constructor
 PhysicsEngine::PhysicsEngine(float airResistance) {
 	this->airResistance = airResistance;
-	collisionHandler = CollisionHandler(&objectTable, 0.9f);
+	collisionHandler = CollisionHandler(&objectTable, 0.7f);
 }
 
 //This function maps a new object to the map of physics objects
@@ -44,6 +44,7 @@ float* PhysicsEngine::getPosition(std::string name) {
 //this function checks for collisions
 void PhysicsEngine::checkCollisions(std::string name) {
 	collisionHandler.calcCollisions();
+	collisionHandler.resetFields();
 }
 
 //this function updates the position of the object

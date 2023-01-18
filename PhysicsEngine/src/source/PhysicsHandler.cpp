@@ -30,6 +30,12 @@ void PhysicsHandler::findForces(PhysicsObject* currObject) {
 			currObject->forces.erase(std::vector<Force>::iterator(currObject->forces.begin() + i));
 			i--;
 		}
+
+		//check if force is a normal force due to a collision
+		if (currObject->forces[i].forceType == Force::PHYSICS_COLLISION_NORMAL) {
+			currObject->forces.erase(std::vector<Force>::iterator(currObject->forces.begin() + i));
+			i--;
+		}
 	}
 	//logger.debugLog("forces.x = " + std::to_string(forces.x) + "\n");
 	//logger.debugLog("forces.y = " + std::to_string(forces.y) + "\n");
@@ -60,7 +66,7 @@ void PhysicsHandler::calcVelocity(PhysicsObject* currObject, float deltaTime) {
 	//add new air resistance forces based on new velocity
 	velocityMagnitude = sqrtf(powf(velocity[0], 2) + powf(velocity[1], 2) + powf(velocity[2], 2));
 	//check if velocity magnitude is really small, if so set to zero to avoid weird artifacts
-	if (velocityMagnitude > 0.001) {
+	if (velocityMagnitude >= 0.1) {
 		forceMagnitude = 0.5f * powf(velocityMagnitude, 2) * airResistance * powf(currObject->getRadius()[0], 2);
 		//normalize force direction to opposite direction of velocity
 		forceDirection[0] = -velocity[0] / velocityMagnitude;

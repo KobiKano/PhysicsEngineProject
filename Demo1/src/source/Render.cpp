@@ -23,7 +23,7 @@ void createSphereObject(GLFWwindow* window, PhysicsEngine& physicsEngine) {
 	objects.push_back(object);
 
 	//add to physics engine
-	float centerPos[3] = {0.0f, 3.0f, 0.0f};
+	float centerPos[3] = {0.0f, 1.0f, 0.0f};
 	float mass = 1.0f;
 	physicsEngine.registerObject(centerPos, radius, "object" + std::to_string(objectsAdded), PhysicsObject::PHYSICS_RIGID_BODY, PhysicsObject::PHYSICS_SPHERE, mass);
 
@@ -90,8 +90,8 @@ Render::Render(GLFWwindow* window) {
 
 	//create floor and add to physics engine
 	Box floor = Box();
-	float centerPos[3] = { 0.0f, -0.95f, 0.0f };
-	float radius[3] = { 1.0f, 0.05f, 1.0f };
+	float centerPos[3] = { 0.0f, -0.8f, 0.0f };
+	float radius[3] = { 1.0f, 0.2f, 1.0f };
 	physicsEngine.registerObject(centerPos, radius, "floor", PhysicsObject::PHYSICS_STATIC, PhysicsObject::PHYSICS_CUBE, 10.0f);
 
 	//initialize camera
@@ -104,7 +104,9 @@ Render::Render(GLFWwindow* window) {
 	//Since I do not want to update the physics engine every frame
 	//The following variables are used to keep track of total time and only update every other frame
 	int frameCounter = 0;
+	const int physicsFrame = 2;
 	float physicsTime = 0.0f;
+	float physicsTimeStep = 0.03f;
 
 	//initialize transformation matrices
 	glm::mat4 model = glm::mat4(1.0f);
@@ -126,7 +128,7 @@ Render::Render(GLFWwindow* window) {
 		glEnable(GL_DEPTH_TEST);
 
 		//increase check if physics time should be reset
-		if (frameCounter == 2) {
+		if (frameCounter == physicsFrame) {
 			physicsTime = 0.0f;
 			frameCounter = 0;
 		}
@@ -181,11 +183,13 @@ Render::Render(GLFWwindow* window) {
 		//draw objects
 		for (int i = 0; i < objects.size(); i++) {
 			//check if physicsEngine should be updated
-			if (frameCounter == 2) {
+			if (frameCounter == physicsFrame) {
 				//check for collisions
 				physicsEngine.checkCollisions(objects[i]->name);
 				//check new position based on physicsEngine
-				physicsEngine.updatePosition(objects[i]->name, physicsTime);
+				physicsEngine.updatePosition(objects[i]->name, physicsTimeStep);
+				//check for collisions again
+				physicsEngine.checkCollisions(objects[i]->name);
 			}
 
 			//set new transformation matrix based on object position in physicsEngine

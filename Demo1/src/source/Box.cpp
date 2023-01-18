@@ -10,22 +10,22 @@ Box::Box() {
 
 	//upper top left vertex (vertex 0)
 	vertices[0] = -1.0f;
-	vertices[1] = -0.9f;
+	vertices[1] = -0.6f;
 	vertices[2] = -1.0f;
 
 	//upper bottom left vertex (vertex 1)
 	vertices[3] = -1.0f;
-	vertices[4] = -0.9f;
+	vertices[4] = -0.6f;
 	vertices[5] = 1.0f;
 
 	//upper top right vertex (vertex 2)
 	vertices[6] = 1.0f;
-	vertices[7] = -0.9f;
+	vertices[7] = -0.6f;
 	vertices[8] = -1.0f;
 
 	//upper bottom right vertex (vertex 3)
 	vertices[9] = 1.0f;
-	vertices[10] = -0.9f;
+	vertices[10] = -0.6f;
 	vertices[11] = 1.0f;
 
 	//lower top left vertex (vertex 4)
