@@ -30,12 +30,6 @@ void PhysicsHandler::findForces(PhysicsObject* currObject) {
 			currObject->forces.erase(std::vector<Force>::iterator(currObject->forces.begin() + i));
 			i--;
 		}
-
-		//check if force is a normal force due to a collision
-		if (currObject->forces[i].forceType == Force::PHYSICS_COLLISION_NORMAL) {
-			currObject->forces.erase(std::vector<Force>::iterator(currObject->forces.begin() + i));
-			i--;
-		}
 	}
 	//logger.debugLog("forces.x = " + std::to_string(forces.x) + "\n");
 	//logger.debugLog("forces.y = " + std::to_string(forces.y) + "\n");
@@ -73,7 +67,7 @@ void PhysicsHandler::calcVelocity(PhysicsObject* currObject, float deltaTime) {
 		forceDirection[1] = -velocity[1] / velocityMagnitude;
 		forceDirection[2] = -velocity[2] / velocityMagnitude;
 
-		currObject->addForce(Force::PHYSICS_FRICTION, forceMagnitude, forceDirection);
+		//currObject->addForce(Force::PHYSICS_FRICTION, forceMagnitude, forceDirection);
 	}
 	else {
 		velocity[0] = 0.0f;

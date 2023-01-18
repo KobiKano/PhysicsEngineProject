@@ -188,8 +188,6 @@ Render::Render(GLFWwindow* window) {
 				physicsEngine.checkCollisions(objects[i]->name);
 				//check new position based on physicsEngine
 				physicsEngine.updatePosition(objects[i]->name, physicsTimeStep);
-				//check for collisions again
-				physicsEngine.checkCollisions(objects[i]->name);
 			}
 
 			//set new transformation matrix based on object position in physicsEngine
