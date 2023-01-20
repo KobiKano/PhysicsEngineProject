@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 #include <vector>
+#include <glm/glm.hpp>
 #include "headers/Logger.h"
 #include "VBO.h"
 #include "EBO.h"
@@ -16,9 +17,12 @@ class Box {
 	VBO vertexBuffer;
 	EBO elementBuffer;
 	VAO vertexArray;
+
+	//private functions for class
+	void addNormalVertices();
 public:
 	//default constructor
-	Box();
+	Box(float width, float height, float depth);
 
 	//functions for class
 	void draw();

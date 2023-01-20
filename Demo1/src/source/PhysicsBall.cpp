@@ -288,6 +288,75 @@ void normalizeVertices(GLfloat radius, std::vector<GLfloat> &vertices) {
 	}
 }
 
+//This function helps add normal vector data to vertex data
+void addNormalVector(std::vector<GLfloat>& vertices, int index, GLfloat vertex[3], glm::vec3 normal) {
+	vertices[index] = vertex[0];
+	vertices[index + 1] = vertex[1];
+	vertices[index + 2] = vertex[2];
+	vertices[index + 3] = normal[0];
+	vertices[index + 4] = normal[1];
+	vertices[index + 5] = normal[2];
+}
+
+//this function finds normal vectors for each vertex
+void addNormalVertices(std::vector<GLfloat>& vertices, std::vector<GLuint>& indices) {
+	//copy vertices and indices data
+	std::vector<GLfloat> verticesCopy = std::vector<GLfloat>(vertices);
+	std::vector<GLuint> indicesCopy = std::vector<GLuint>(indices);
+	vertices.clear();
+	indices.clear();
+
+	//allocate memory for vertices
+	vertices.resize(verticesCopy.size() * 9);
+	indices.resize(indicesCopy.size());
+	int vIndex = 0;
+	int iIndex = 0;
+
+	GLfloat vertex1[3], vertex2[3], vertex3[3];
+	GLfloat centerOfTriangle[3];
+	GLfloat midPoint[3];
+	glm::vec3 normalVector;
+
+	//for loop to iterate through all triangles
+	for (int i = 0; i < indicesCopy.size(); i+=3) {
+		//assign vertices
+		vertex1[0] = verticesCopy[indicesCopy[i] * 3];
+		vertex1[1] = verticesCopy[indicesCopy[i] * 3 + 1];
+		vertex1[2] = verticesCopy[indicesCopy[i] * 3 + 2];
+		vertex2[0] = verticesCopy[indicesCopy[i + 1] * 3];
+		vertex2[1] = verticesCopy[indicesCopy[i + 1] * 3 + 1];
+		vertex2[2] = verticesCopy[indicesCopy[i + 1] * 3 + 2];
+		vertex3[0] = verticesCopy[indicesCopy[i + 2] * 3];
+		vertex3[1] = verticesCopy[indicesCopy[i + 2] * 3 + 1];
+		vertex3[2] = verticesCopy[indicesCopy[i + 2] * 3 + 2];
+
+		//find center of triangle
+		midPoint[0] = (vertex1[0] + vertex2[0]) * 0.5f;
+		midPoint[1] = (vertex1[1] + vertex2[1]) * 0.5f;
+		midPoint[2] = (vertex1[2] + vertex2[2]) * 0.5f;
+
+		centerOfTriangle[0] = (midPoint[0] + vertex3[0]) * 0.5f;
+		centerOfTriangle[1] = (midPoint[1] + vertex3[1]) * 0.5f;
+		centerOfTriangle[2] = (midPoint[2] + vertex3[2]) * 0.5f;
+
+		//find normal vector
+		normalVector = glm::vec3(centerOfTriangle[0], centerOfTriangle[1], centerOfTriangle[2]);
+		glm::normalize(normalVector);
+
+		//add normal vector for each point
+		addNormalVector(vertices, vIndex, vertex1, normalVector);
+		addNormalVector(vertices, vIndex + 6, vertex2, normalVector);
+		addNormalVector(vertices, vIndex + 12, vertex3, normalVector);
+		vIndex += 18;
+
+		//add indices
+		indices[iIndex] = iIndex;
+		indices[iIndex + 1] = iIndex + 1;
+		indices[iIndex + 2] = iIndex + 2;
+		iIndex += 3;
+	}
+}
+
 //default constuctor
 PhysicsBall::PhysicsBall() {}
 
@@ -313,6 +382,7 @@ void PhysicsBall::generate(GLfloat radius, GLFWwindow* window) {
 	generateIcosahedron(radius, vertices, indices);
 	subdivideSurfaces(radius, vertices, indices);
 	normalizeVertices(radius, vertices);
+	addNormalVertices(vertices, indices);
 	//move created object to be centered around mouse click position
 	//bind data to openGL
 	vertexArray = VAO(1);

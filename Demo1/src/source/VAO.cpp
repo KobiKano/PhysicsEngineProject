@@ -15,7 +15,7 @@ void VAO::link(VBO VBO, EBO EBO, GLuint layout) {
 	EBO.assign();
 
 	//assign attributes to vertices
-	glVertexAttribPointer(layout, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(layout, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(layout);
 }
 

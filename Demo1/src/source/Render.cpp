@@ -89,9 +89,10 @@ Render::Render(GLFWwindow* window) {
 	shaderProgram = Shader(vert1, frag1);
 
 	//create floor and add to physics engine
-	Box floor = Box();
+	Box floor = Box(2.0f, 0.4f, 2.0f);
 	float centerPos[3] = { 0.0f, -0.8f, 0.0f };
 	float radius[3] = { 1.0f, 0.2f, 1.0f };
+	glm::vec3 position;
 	physicsEngine.registerObject(centerPos, radius, "floor", PhysicsObject::PHYSICS_STATIC, PhysicsObject::PHYSICS_CUBE, 10.0f);
 
 	//initialize camera
@@ -113,6 +114,15 @@ Render::Render(GLFWwindow* window) {
 	glm::mat4 view = glm::mat4(1.0f);
 	glm::mat4 projection = glm::mat4(1.0f);
 
+	//memory allocations for render operations
+	int modelLoc;
+	int viewLoc;
+	int projLoc;
+	int objectColor;
+	int lightColor;
+	int lightPosition;
+
+
 	//add start buffer to window
 	glfwSwapBuffers(window);
 
@@ -123,7 +133,7 @@ Render::Render(GLFWwindow* window) {
 	//this is the generic render loop for the program
 	while (!glfwWindowShouldClose(window)) {
 		//set render parameters
-		glClearColor(0.2f, 0.0885f, 0.520f, 0.5f);
+		glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
 
@@ -138,28 +148,37 @@ Render::Render(GLFWwindow* window) {
 		//define the shader
 		shaderProgram.create();
 
+		//set lightColor and lightPosition uniforms
+		lightColor = glGetUniformLocation(shaderProgram.ID, "lightColor");
+		lightPosition = glGetUniformLocation(shaderProgram.ID, "lightPos");
+		glUniform3f(lightColor, 1.0f, 1.0f, 1.0f);
+		glUniform3f(lightPosition, 0.5f, 0.5f, 0.5f);
+
 		//set transformation matrices
 		glfwGetWindowSize(window, &width, &height);
 		model = glm::mat4(1.0f);
 		view = camera.view();
-		projection = glm::perspective(glm::radians(45.0f), (float)width / float(height), 0.1f, 100.0f);
-		int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
-		int viewLoc = glGetUniformLocation(shaderProgram.ID, "view");
-		int projLoc = glGetUniformLocation(shaderProgram.ID, "projection");
+		projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
+		modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
+		viewLoc = glGetUniformLocation(shaderProgram.ID, "view");
+		projLoc = glGetUniformLocation(shaderProgram.ID, "projection");
 
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 		//set shader color for floor
-		int objectcolor = glGetUniformLocation(shaderProgram.ID, "color");
-		glUniform3f(objectcolor, 0.36f, 0.350f, 0.350f);
+		objectColor = glGetUniformLocation(shaderProgram.ID, "color");
+		glUniform3f(objectColor, 0.910f, 0.557f, 0.0273f);
 
 		//draw floor
+		position = glm::vec3(0.0f, -0.8f, 0.0f);
+		model = glm::translate(model, position);
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		floor.draw();
 
 		//set color for ball objects
-		glUniform3f(objectcolor, 0.76f, 0.722f, 0.722f);
+		glUniform3f(objectColor, 1.0f, 1.0f, 1.0f);
 
 		//check if max size reached
 		if (objects.size() == 20) {
@@ -196,10 +215,10 @@ Render::Render(GLFWwindow* window) {
 			objects[i]->position[1] = positionf[1];
 			objects[i]->position[2] = positionf[2];
 
-			glm::vec3 position = glm::vec3(positionf[0], positionf[1], positionf[2]);
+			model = glm::mat4(1.0f);
+			position = glm::vec3(positionf[0], positionf[1], positionf[2]);
 			model = glm::translate(model, position);
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-			model = glm::mat4(1.0f);
 			
 			//draw objects
 			objects[i]->draw();
