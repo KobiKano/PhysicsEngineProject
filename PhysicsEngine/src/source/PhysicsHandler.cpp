@@ -4,19 +4,33 @@ static Logger logger = Logger(Logger::info);
 
 //this is the constructor for this class
 PhysicsHandler::PhysicsHandler(PhysicsObject* currObject,  float deltaTime, float airResistance) {
+	this->currObject = currObject;
 	this->airResistance = airResistance;
-	findForces(currObject);
-	calcAcceration(currObject);
-	calcVelocity(currObject, deltaTime);
-	calcPosition(currObject, deltaTime);
+	findForces();
+	calcAcceration();
+	calcVelocity(deltaTime);
+	calcPosition(deltaTime);
+
+	if (isRotational) {
+		addNewRotationalForce();
+	}
 
 	//set new values in currObject
 	currObject->setCenterPos(nextPos);
 	currObject->setVelocity(velocity);
 }
 
+//this function calculates the new rotational force
+void PhysicsHandler::addNewRotationalForce() {
+	float direction[3] = { -nextPos[0], -nextPos[1], -nextPos[2] };
+
+	//add force
+	currObject->addForce(Force::PHYSICS_ROTATIONAL, rotationalMagnitude, direction);
+}
+
 //this is a private function that finds all forces on the currObject
-void PhysicsHandler::findForces(PhysicsObject* currObject) {
+void PhysicsHandler::findForces() {
+	rotationalMagnitude = 0.0f;
 	for (int i = 0; i < currObject->forces.size(); i++) {
 		forces.x += currObject->forces[i].magnitude * currObject->forces[i].direction[0];
 		//logger.debugLog("direction.x = " + std::to_string(currObject->forces[i].direction[0]) + "\n");
@@ -30,6 +44,14 @@ void PhysicsHandler::findForces(PhysicsObject* currObject) {
 			currObject->forces.erase(std::vector<Force>::iterator(currObject->forces.begin() + i));
 			i--;
 		}
+
+		//check if force is rotational
+		if (currObject->forces[i].forceType == Force::PHYSICS_ROTATIONAL) {
+			rotationalMagnitude += currObject->forces[i].magnitude;
+			isRotational = true;
+			currObject->forces.erase(std::vector<Force>::iterator(currObject->forces.begin() + i));
+			i--;
+		}
 	}
 	//logger.debugLog("forces.x = " + std::to_string(forces.x) + "\n");
 	//logger.debugLog("forces.y = " + std::to_string(forces.y) + "\n");
@@ -37,7 +59,7 @@ void PhysicsHandler::findForces(PhysicsObject* currObject) {
 }
 
 //this function uses the forces and the mass field of currObject to calculate acceleration
-void PhysicsHandler::calcAcceration(PhysicsObject* currObject) {
+void PhysicsHandler::calcAcceration() {
 	float mass = currObject->getMass();
 	acceleration.x = forces.x / mass;
 	acceleration.y = forces.y / mass;
@@ -48,7 +70,7 @@ void PhysicsHandler::calcAcceration(PhysicsObject* currObject) {
 }
 
 //this function uses the calculated acceleration and past velocity to calculate the new velocity
-void PhysicsHandler::calcVelocity(PhysicsObject* currObject, float deltaTime) {
+void PhysicsHandler::calcVelocity(float deltaTime) {
 	float* currVelocity = currObject->getVelocity();
 	float velocityMagnitude;
 	float forceMagnitude;
@@ -81,7 +103,7 @@ void PhysicsHandler::calcVelocity(PhysicsObject* currObject, float deltaTime) {
 }
 
 //this is a private function that uses the forces to calculate the new position
-void PhysicsHandler::calcPosition(PhysicsObject* currObject, float deltaTime) {
+void PhysicsHandler::calcPosition(float deltaTime) {
 	float* currPosition = currObject->getCenterPos();
 	float* currVelocity = currObject->getVelocity();
 	nextPos[0] = currPosition[0] + currVelocity[0] * deltaTime + 0.5 * acceleration.x * powf(deltaTime, 2);
