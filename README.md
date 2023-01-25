@@ -24,3 +24,6 @@
 - Add proper lighting to scene
 - Add support for object rotation for both spheres and cubes
 - Possibly refine both rendering system and physics engine to create personalized game-engine
+
+## Personal Contact
+### tthiagarajan@wisc.edu
